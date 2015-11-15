@@ -1,15 +1,13 @@
 //
-//  ViewController.h
+//  CrossHairView.h
 //  Homepwner
 //
-//  Created by Peter Molnar on 14/03/2015.
+//  Created by Peter Molnar on 17/05/2015.
 //  Copyright (c) 2015 Peter Molnar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface CrossHairView : UIView
 
 @end
-
