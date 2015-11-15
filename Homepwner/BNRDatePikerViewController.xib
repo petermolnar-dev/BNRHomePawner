@@ -16,8 +16,8 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="LYm-M1-8bR">
-                    <rect key="frame" x="-86" y="66" width="600" height="162"/>
+                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="LYm-M1-8bR">
+                    <rect key="frame" x="8" y="56" width="584" height="216"/>
                     <animations/>
                     <date key="date" timeIntervalSinceReferenceDate="451428168.95626402">
                         <!--2015-04-22 20:42:48 +0000-->
@@ -26,6 +26,11 @@
             </subviews>
             <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="LYm-M1-8bR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="56" id="BDM-TA-JCW"/>
+                <constraint firstAttribute="trailing" secondItem="LYm-M1-8bR" secondAttribute="trailing" constant="8" id="YmG-Pg-Otf"/>
+                <constraint firstItem="LYm-M1-8bR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="yFd-Af-WLP"/>
+            </constraints>
         </view>
     </objects>
 </document>
