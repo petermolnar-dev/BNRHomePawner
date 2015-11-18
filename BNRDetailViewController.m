@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *serialNumberField;
 @property (weak, nonatomic) IBOutlet UITextField *valueField;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) IBOutlet UIButton *changeDateBtn;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 - (IBAction)backGroundTapped:(id)sender;
@@ -24,6 +25,96 @@
 @end
 
 @implementation BNRDetailViewController
+
+#pragma mark - Lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    UIImageView *iv = [[UIImageView alloc] initWithImage:nil];
+    
+//    Te contetntmode for the image view in the xib was Aspect Fit:
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    
+//    Do not produce translated constraint for this view
+    iv.translatesAutoresizingMaskIntoConstraints = NO;
+    
+//    Add the imageview as a subview for this controller's view
+    [self.view addSubview:iv];
+//    Point to the view with the imageView property
+    self.imageView = iv;
+    
+    NSDictionary *nameMap = @{@"imageView" : self.imageView,
+                              @"dateButton": self.changeDateBtn,
+                              @"toolbar" : self.toolBar};
+//    imageview is 0 pts from superview aat left and right edges
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView]-0-|"
+                                                                             options:0
+                                                                             metrics:nil
+                                                                               views:nameMap];
+//    8pts from dateButton for the top edge of iageview
+//    and 8 ps from the toolbar for the bottom edge
+    NSArray *vertivalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[dateButton]-[imageView]-[toolbar]"
+                                                                           options:0
+                                                                           metrics:nil
+                                                                             views:nameMap];
+    [self.view addConstraints:horizontalConstraints];
+    [self.view addConstraints:vertivalConstraints];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    NSString *imageKey = self.item.itemKey;
+    
+    // Het the image or that key
+    UIImage *imageToDisplay = [[BNRIMageStore sharedStore] imageForKey:imageKey];
+    
+    // set the view's image
+    self.imageView.image = imageToDisplay;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    BNRItem *item = self.item;
+    
+    self.nameField.text = item.itemName;
+    self.serialNumberField.text = item.serialNumber;
+    self.valueField.text = [NSString stringWithFormat:@"%d", item.valueInDollars];
+    
+    //You need NSDateFormatter the will turn date into a simple string
+    static NSDateFormatter *dateFormatter= nil;
+    
+    if (!dateFormatter ){
+        dateFormatter = [[NSDateFormatter alloc]init];
+        dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    }
+    //Use filtered NSDat object ti set datelabel content
+    self.dateLabel.text = [dateFormatter stringFromDate:item.dateCreated];
+    
+    //    UITapGestureRecognizer *tapBackground = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backGroundTap:)];
+    //    [self.view addGestureRecognizer:tapBackground];
+    
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    //Clear First responder
+    [self.view endEditing:YES];
+    
+    //"Save" changes to the item
+    BNRItem *item = self.item;
+    
+    item.itemName = self.nameField.text;
+    item.serialNumber = self.serialNumberField.text;
+    item.valueInDollars = [self.valueField.text intValue];
+}
+
+
+
 - (IBAction)takePicture:(id)sender {
     
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc]init];
@@ -79,55 +170,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    NSString *imageKey = self.item.itemKey;
-    
-    // Het the image or that key
-    UIImage *imageToDisplay = [[BNRIMageStore sharedStore] imageForKey:imageKey];
-    
-    // set the view's image
-    self.imageView.image = imageToDisplay;
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    BNRItem *item = self.item;
-    
-    self.nameField.text = item.itemName;
-    self.serialNumberField.text = item.serialNumber;
-    self.valueField.text = [NSString stringWithFormat:@"%d", item.valueInDollars];
-    
-    //You need NSDateFormatter the will turn date into a simple string
-    static NSDateFormatter *dateFormatter= nil;
-    
-    if (!dateFormatter ){
-        dateFormatter = [[NSDateFormatter alloc]init];
-        dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-        dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    }
-    //Use filtered NSDat object ti set datelabel content
-    self.dateLabel.text = [dateFormatter stringFromDate:item.dateCreated];
-    
-//    UITapGestureRecognizer *tapBackground = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backGroundTap:)];
-//    [self.view addGestureRecognizer:tapBackground];
-   
-}
-
--(void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    //Clear First responder
-    [self.view endEditing:YES];
-    
-    //"Save" changes to the item
-    BNRItem *item = self.item;
-    
-    item.itemName = self.nameField.text;
-    item.serialNumber = self.serialNumberField.text;
-    item.valueInDollars = [self.valueField.text intValue];
-}
 
 -(void)setItem:(BNRItem *)item {
     _item = item;
